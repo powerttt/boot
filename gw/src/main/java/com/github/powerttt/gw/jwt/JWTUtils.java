@@ -63,10 +63,9 @@ public class JWTUtils {
      * 生成JWT
      */
     public String createJWT(String id, String subject, String roles) {
-        Date now = new Date();
         JwtBuilder builder = Jwts.builder().setId(id)
                 .setSubject(subject)
-                .setIssuedAt(now)
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, key).claim("roles", roles);
         return builder.compact();
@@ -92,15 +91,4 @@ public class JWTUtils {
         log.info("令牌未过期");
         return claims.getExpiration().getTime() - System.currentTimeMillis() < refresh ? createJWT(claims.getId(), claims.getSubject(), claims.get("roles").toString()) : token;
     }
-
-    /**
-     * 获取当前用户
-     */
-    public String getId(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7);
-        Claims claims = parseJWT(token);
-        return claims.getId();
-    }
-
 }

@@ -38,19 +38,14 @@ public class JWTFilter implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //只是解析token
         String header = request.getHeader("Authorization");
-//        if (StringUtils.isEmpty(header)) {
-//            response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE);
-//            response.getWriter().write("{\"code\": \"401\", \"msg\": \"未登入或已过期\"}");
-//            return false;
-//        }
         if (StringUtils.isNotEmpty(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
                 // 解析
                 Claims claims = jwtUtils.parseJWT(token);
                 if (claims != null) {
-                    // 对比权限
-                    // String role = (String) claims.get("roles");
+                    // 将当前用户放入请求
+                    request.setAttribute("auth", claims.getSubject());
                     return true;
                 }
             } catch (Exception e) {
