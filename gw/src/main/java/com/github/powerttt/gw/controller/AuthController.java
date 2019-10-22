@@ -1,8 +1,7 @@
 package com.github.powerttt.gw.controller;
 
-import com.github.powerttt.commons.ResultBean;
+import com.github.powerttt.commons.result.ResultBean;
 import com.github.powerttt.gw.jwt.JWTUtils;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

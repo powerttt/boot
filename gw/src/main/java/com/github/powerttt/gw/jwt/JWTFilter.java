@@ -46,6 +46,7 @@ public class JWTFilter implements HandlerInterceptor {
                 if (claims != null) {
                     // 将当前用户放入请求
                     request.setAttribute("auth", claims.getSubject());
+                    log.info("request: {}", request.getAttribute("auth"));
                     return true;
                 }
             } catch (Exception e) {

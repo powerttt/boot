@@ -1,7 +1,7 @@
 package com.github.powerttt.gw.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.github.powerttt.commons.ResultBean;
+import com.github.powerttt.commons.result.ResultBean;
 import com.github.powerttt.commons.exception.UpExcetion;
 import com.github.powerttt.gw.config.Dubbo2RouterProperties;
 import com.github.powerttt.gw.entity.*;
@@ -42,6 +42,8 @@ public class DubboGenericController {
     @RequestMapping
     public Object dubboExec(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("request2222: {}", httpServletRequest.getAttribute("auth"));
+
             long startTime = System.currentTimeMillis();
             ServiceInfo serviceInfo = generateInterfaceInfo(httpServletRequest, httpServletResponse);
             log.info("{}  服务信息： {}", httpServletRequest.getParameter("auth"), JSON.toJSONString(serviceInfo));
