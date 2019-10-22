@@ -10,9 +10,9 @@ jwt:
   config:
     key: powertn
     # 60 * 60 * 24 * 7
-    expiration: 604800
+    expiration: 604800000
     # 60 * 60 * 24
-    refresh: 86400
+    refresh: 86400000
 dubbo:
   application:
     name: GW
@@ -21,6 +21,7 @@ dubbo:
   protocol:
     port: -1
     name: dubbo
+  default-version: 1.0
 
 logging:
   level:
@@ -36,19 +37,22 @@ powertn:
         serverName: com.github.powerttt.generic.provider.TestService
         methods:
           echo:
-            - filed: say
-              type: String
-            - filed: say
-              type: String
+            req-method: GET
+            paramList:
+              - filed: say
+                type: String
           test:
-            - filed: say
-              type: String
-          test1:
-            - filed: null
-              type: null
+            req-method: GET
+            paramList:
+              - filed: id
+                type: String
+              - filed: test
+                type: Double
           restful:
-            - filed: id
-              rest-path: user/{id}
-              type: String
+            rest-path: user/{id}
+            req-method: GET
+            paramList:
+              - filed: id
+                type: Long
 server:
   port: 8900
