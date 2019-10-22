@@ -19,7 +19,7 @@ public class Dubbo2InterfaceProperties {
     /**
      * 服务方法 key-方法名称
      */
-    private Map<String, List<Dubbo2ParamProperties>> methods;
+    private Map<String, Dubbo2MethodProperties> methods;
 
     public String getServerName() {
         return serverName;
@@ -29,15 +29,11 @@ public class Dubbo2InterfaceProperties {
         this.serverName = serverName;
     }
 
-    public Map<String, List<Dubbo2ParamProperties>> getMethods() {
+    public Map<String, Dubbo2MethodProperties> getMethods() {
         return methods;
     }
 
-    public void setMethods(Map<String, List<Dubbo2ParamProperties>> methods) {
+    public void setMethods(Map<String, Dubbo2MethodProperties> methods) {
         this.methods = methods;
-    }
-
-    public List<Dubbo2ParamProperties> generateMethod(String method) {
-        return method == null ? null : methods.get(method);
     }
 }

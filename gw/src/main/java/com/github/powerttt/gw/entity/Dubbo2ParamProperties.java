@@ -1,5 +1,7 @@
 package com.github.powerttt.gw.entity;
 
+import java.util.List;
+
 /**
  * @Author tongning
  * @Date 2019/7/28 0028
@@ -8,16 +10,16 @@ package com.github.powerttt.gw.entity;
  * >
  */
 public class Dubbo2ParamProperties {
+
     private String filed;
     private String type;
-    private String restPath;
 
-    public String getRestPath() {
-        return restPath;
+    public String getType() {
+        return type;
     }
 
-    public void setRestPath(String restPath) {
-        this.restPath = restPath;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getFiled() {
@@ -26,13 +28,5 @@ public class Dubbo2ParamProperties {
 
     public void setFiled(String filed) {
         this.filed = filed;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

@@ -14,6 +14,7 @@ public class ServiceInfo {
      * 服务名（包名）
      */
     private String serverName;
+    private String version;
 
     private String methodName;
 
@@ -60,4 +61,12 @@ public class ServiceInfo {
     public void setParamProperties(List<Dubbo2ParamProperties> paramProperties) {
         this.paramProperties = paramProperties;
     }
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
 }

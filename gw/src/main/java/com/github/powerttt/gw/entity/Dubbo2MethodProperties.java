@@ -17,10 +17,28 @@ public class Dubbo2MethodProperties {
      */
     private String methodName;
 
+    private String restPath;
+    private String reqMethod;
     /**
      * 方法参数列表
      */
     private List<Dubbo2ParamProperties> paramList;
+
+    public String getRestPath() {
+        return restPath;
+    }
+
+    public void setRestPath(String restPath) {
+        this.restPath = restPath;
+    }
+
+    public String getReqMethod() {
+        return reqMethod;
+    }
+
+    public void setReqMethod(String reqMethod) {
+        this.reqMethod = reqMethod;
+    }
 
     public String getMethodName() {
         return methodName;
