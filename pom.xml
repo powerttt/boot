@@ -24,7 +24,7 @@
         <module>gw</module>
         <module>commons</module>
         <module>auth</module>
-        <module>generic-provider-test</module>
+        <module>generic-provider</module>
     </modules>
 
     <dependencies>
