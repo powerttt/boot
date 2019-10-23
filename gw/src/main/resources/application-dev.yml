@@ -38,11 +38,13 @@ powertn:
         methods:
           echo:
             req-method: GET
+            roles: ADMIN,TEST
             paramList:
               - filed: say
                 type: String
           test:
             req-method: GET
+            roles: ALL
             paramList:
               - filed: id
                 type: String

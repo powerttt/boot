@@ -15,7 +15,7 @@ public enum  Dubbo2ParamTypeEnum {
     String("java.lang.String"),
     Integer("java.lang.Integer"),
     Float("java.lang.Float"),
-    Dubble("java.lang.Dubble"),
+    Double("java.lang.Double"),
     Long("java.lang.Long"),
     ;
     private String javaType;

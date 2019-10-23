@@ -7,6 +7,9 @@ public enum ResultConstants {
     SERVER_NOT_FOUND(200, "test"),
 
 
+    AUTH_INVALID(40101, "令牌失效或过期"),
+
+    AUTH_NOT_LOGIN(40102, "请登入账号"),
 
 
     ;

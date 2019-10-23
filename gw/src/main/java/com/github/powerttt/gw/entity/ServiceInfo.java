@@ -1,5 +1,7 @@
 package com.github.powerttt.gw.entity;
 
+import io.jsonwebtoken.Claims;
+
 import java.util.List;
 
 /**
@@ -15,12 +17,32 @@ public class ServiceInfo {
      */
     private String serverName;
     private String version;
-
     private String methodName;
-
     private List<String> paramTypes;
     private List<Object> params;
     private List<Dubbo2ParamProperties> paramProperties;
+
+    /**
+     * 认证信息
+     */
+    private String methodRoles;
+    private Claims claims;
+
+    public String getMethodRoles() {
+        return methodRoles;
+    }
+
+    public void setMethodRoles(String methodRoles) {
+        this.methodRoles = methodRoles;
+    }
+
+    public Claims getClaims() {
+        return claims;
+    }
+
+    public void setClaims(Claims claims) {
+        this.claims = claims;
+    }
 
     public String getServerName() {
         return serverName;
@@ -61,6 +83,7 @@ public class ServiceInfo {
     public void setParamProperties(List<Dubbo2ParamProperties> paramProperties) {
         this.paramProperties = paramProperties;
     }
+
     public String getVersion() {
         return version;
     }

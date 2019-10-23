@@ -10,7 +10,7 @@ package com.github.powerttt.generic.provider;
 public interface TestService {
 
 
-    void each(String say);
+    void echo(String say);
 
 
     String test(String say, Double test);

@@ -1,5 +1,6 @@
 package com.github.powerttt.gw.jwt;
 
+import com.github.powerttt.gw.utils.GwConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 /**
  *   iss: jwt签发者
@@ -62,14 +64,14 @@ public class JWTUtils {
     /**
      * 生成JWT
      */
-    public String createJWT(String id, String subject, String roles) {
+    public String createJWT(String id, String subject, Map<String, String> map) {
         JwtBuilder builder = Jwts.builder().setId(id)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, key).claim("roles", roles);
+                .signWith(SignatureAlgorithm.HS256, key);
+        map.forEach((key, value) -> builder.claim(key, value));
         return builder.compact();
-
     }
 
     /**
@@ -88,7 +90,17 @@ public class JWTUtils {
         String header = request.getHeader("Authorization");
         String token = header.substring(7);
         Claims claims = parseJWT(token);
-        log.info("令牌未过期");
-        return claims.getExpiration().getTime() - System.currentTimeMillis() < refresh ? createJWT(claims.getId(), claims.getSubject(), claims.get("roles").toString()) : token;
+        if (claims.getExpiration().getTime() - System.currentTimeMillis() < refresh) {
+            claims.setExpiration(new Date(System.currentTimeMillis() + expiration));
+            JwtBuilder builder = Jwts.builder();
+            claims.forEach((key, value) -> builder.claim(key, value));
+            String refreshToken = builder.compact();
+            log.info("refresh token : {}", refreshToken);
+            return refreshToken;
+        } else {
+            log.info("token not expire");
+            return token;
+        }
+
     }
 }

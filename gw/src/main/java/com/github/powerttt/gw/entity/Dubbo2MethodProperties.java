@@ -16,13 +16,31 @@ public class Dubbo2MethodProperties {
      * 方法名
      */
     private String methodName;
-
+    /**
+     * RESTful
+     */
     private String restPath;
+    /**
+     * request method
+     */
     private String reqMethod;
+    /**
+     * 角色权限
+     */
+    private String roles;
+
     /**
      * 方法参数列表
      */
     private List<Dubbo2ParamProperties> paramList;
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public String getRestPath() {
         return restPath;
