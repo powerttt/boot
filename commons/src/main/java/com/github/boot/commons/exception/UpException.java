@@ -1,6 +1,6 @@
-package com.github.powerttt.commons.exception;
+package com.github.boot.commons.exception;
 
-import com.github.powerttt.commons.result.ResultConstantBean;
+import com.github.boot.commons.result.ResultConstantBean;
 import lombok.Data;
 
 /**

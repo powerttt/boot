@@ -1,4 +1,4 @@
-package com.github.powerttt.generic;
+package com.github.boot.generic;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;

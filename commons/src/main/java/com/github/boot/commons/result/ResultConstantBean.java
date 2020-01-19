@@ -1,4 +1,4 @@
-package com.github.powerttt.commons.result;
+package com.github.boot.commons.result;
 
 /**
  * 返回UpException异常异常时直接调用

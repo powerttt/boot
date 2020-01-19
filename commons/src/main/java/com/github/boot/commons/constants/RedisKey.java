@@ -1,4 +1,4 @@
-package com.github.powerttt.commons.constants;
+package com.github.boot.commons.constants;
 
 import java.util.function.Function;
 

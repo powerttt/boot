@@ -1,4 +1,4 @@
-package com.github.powerttt.generic.provider;
+package com.github.boot.generic.provider;
 
 /**
  * @Author tongning

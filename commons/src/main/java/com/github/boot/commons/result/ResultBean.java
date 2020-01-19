@@ -1,4 +1,4 @@
-package com.github.powerttt.commons.result;
+package com.github.boot.commons.result;
 
 import java.io.Serializable;
 

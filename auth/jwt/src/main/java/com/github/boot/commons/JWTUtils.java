@@ -1,7 +1,7 @@
 package com.github.boot.commons;
 
 import com.github.boot.commons.utils.PropertyUtil;
-import com.github.powerttt.commons.constants.JwtKeys;
+import com.github.boot.commons.constants.JwtKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

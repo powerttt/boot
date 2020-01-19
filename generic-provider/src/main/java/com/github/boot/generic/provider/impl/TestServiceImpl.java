@@ -1,6 +1,6 @@
-package com.github.powerttt.generic.provider.impl;
+package com.github.boot.generic.provider.impl;
 
-import com.github.powerttt.generic.provider.TestService;
+import com.github.boot.generic.provider.TestService;
 import org.apache.dubbo.config.annotation.Service;
 
 /**
