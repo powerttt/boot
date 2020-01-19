@@ -1,18 +1,15 @@
 package com.github.powerttt.gw.controller;
 
-import com.alibaba.fastjson.JSON;
+import com.github.powerttt.commons.constants.JwtKeys;
+import com.github.powerttt.commons.exception.UpException;
 import com.github.powerttt.commons.result.ResultBean;
-import com.github.powerttt.commons.exception.UpExcetion;
-import com.github.powerttt.gw.config.Dubbo2RouterProperties;
-import com.github.powerttt.gw.entity.*;
-import com.github.powerttt.gw.enums.Dubbo2ParamTypeEnum;
-import com.github.powerttt.gw.utils.GwConstants;
+import com.github.powerttt.gw.entity.ServiceInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.utils.ReferenceConfigCache;
+import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -39,7 +34,7 @@ public class DubboGenericController {
     private String defaultVersion;
 
     @RequestMapping
-    public Object dubboExec(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResultBean dubboExec(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             long startTime = System.currentTimeMillis();
             ServiceInfo serviceInfo = (ServiceInfo) httpServletRequest.getAttribute(ServiceInfo.class.getSimpleName());
@@ -49,12 +44,28 @@ public class DubboGenericController {
             }
             String version = httpServletRequest.getParameter("version");
             serviceInfo.setVersion(version == null ? defaultVersion : version);
-            log.info("dubboExec server info ： {}", JSON.toJSONString(serviceInfo));
-            Object result = dubboInvoker(serviceInfo);
-            log.info("dubboExec result : {} ", JSON.toJSONString(result));
-            log.info("dubboExec user time : {}ms ", System.currentTimeMillis() - startTime);
-            return result;
+            String userno = (String) serviceInfo.getClaims().get(JwtKeys.RPC_USER_NO);
+            // 注入rpc参数
+            serviceInfo.getClaims().forEach((k, v) -> RpcContext.getContext().setAttachment(k, String.valueOf(v)));
+            Object result = null;
+            try {
+                result = dubboInvoker(serviceInfo);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResultBean().failure("400000", "服务异常");
+            }
+            if (userno != null) {
+                log.info("{} used time: \u001b[31m{}\u001b[0m ms [\u001b[31m{}.{}\u001b[0m]", userno, System.currentTimeMillis() - startTime, serviceInfo.getServerName(), serviceInfo.getMethodName());
+            } else {
+                log.info("demo used time: \u001b[31m{}\u001b[0m ms [\u001b[31m{}.{}\u001b[0m]", System.currentTimeMillis() - startTime, serviceInfo.getServerName(), serviceInfo.getMethodName());
+            }
+
+            return result instanceof ResultBean ? (ResultBean) result : new ResultBean().success(result);
+        } catch (UpException upException) {
+            upException.printStackTrace();
+            return new ResultBean().failure(upException.getCode(), upException.getMsg());
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResultBean().failure("500", "失败");
         }
     }
@@ -67,7 +78,7 @@ public class DubboGenericController {
         referenceConfig.setVersion(serviceInfo.getVersion());
         referenceConfig.setApplication(applicationConfig);
         referenceConfig.setRegistry(registryConfig);
-        referenceConfig.setTimeout(1000);
+        referenceConfig.setTimeout(100000);
         referenceConfig.setRetries(0);
         /*
         ReferenceConfig 实例很重，封装了与注册中心的连接以及与提供者的连接，需要缓存。
@@ -81,8 +92,9 @@ public class DubboGenericController {
             cache.destroy(referenceConfig);
             throw new IllegalStateException("服务不可用");
         }
+        if (serviceInfo.getParams() == null || serviceInfo.getParams().size() == 0) {
+            return genericService.$invoke(serviceInfo.getMethodName(), null, null);
+        }
         return genericService.$invoke(serviceInfo.getMethodName(), serviceInfo.getParamTypes().toArray(new String[0]), serviceInfo.getParams().toArray());
     }
-
-
 }

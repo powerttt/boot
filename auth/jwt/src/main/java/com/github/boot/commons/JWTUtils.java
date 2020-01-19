@@ -1,15 +1,12 @@
-package com.github.powerttt.gw.jwt;
+package com.github.boot.commons;
 
-import com.github.powerttt.gw.utils.GwConstants;
+import com.github.boot.commons.utils.PropertyUtil;
+import com.github.powerttt.commons.constants.JwtKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,37 +25,16 @@ import java.util.Map;
  * <p>
  * >
  */
-@Slf4j
-@Component
-@ConfigurationProperties(prefix = "jwt.config")
 public class JWTUtils {
 
     private String key;
     private Long expiration;
     private Long refresh;
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Long getExpiration() {
-        return expiration;
-    }
-
-    public void setExpiration(Long expiration) {
-        this.expiration = expiration;
-    }
-
-    public Long getRefresh() {
-        return refresh;
-    }
-
-    public void setRefresh(Long refresh) {
-        this.refresh = refresh;
+    public JWTUtils() {
+        this.key = PropertyUtil.getProperty("jwt.config.key");
+        this.expiration = Long.valueOf(PropertyUtil.getProperty("jwt.config.expiration"));
+        this.refresh = Long.valueOf(PropertyUtil.getProperty("jwt.config.refresh"));
     }
 
     /**
@@ -70,7 +46,7 @@ public class JWTUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, key);
-        map.forEach((key, value) -> builder.claim(key, value));
+        map.forEach(builder::claim);
         return builder.compact();
     }
 
@@ -81,26 +57,44 @@ public class JWTUtils {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(jwtStr).getBody();
     }
 
+    /**
+     * 生成jwt
+     */
+    public String createJWT(Claims claims) {
+        JwtBuilder builder = Jwts.builder()
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, key);
+        claims.forEach(builder::claim);
+        return builder.compact();
+    }
+
 
     /**
      * 判断刷新JWT
      * 过期时间小于24小时，刷新
      */
-    public String refresh(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        String token = header.substring(7);
+    public String refresh(String headerToken) {
+        String token = headerToken.substring(JwtKeys.BEARER.length());
         Claims claims = parseJWT(token);
         if (claims.getExpiration().getTime() - System.currentTimeMillis() < refresh) {
             claims.setExpiration(new Date(System.currentTimeMillis() + expiration));
             JwtBuilder builder = Jwts.builder();
             claims.forEach((key, value) -> builder.claim(key, value));
-            String refreshToken = builder.compact();
-            log.info("refresh token : {}", refreshToken);
+            String refreshToken = builder.signWith(SignatureAlgorithm.HS256, key).compact();
             return refreshToken;
-        } else {
-            log.info("token not expire");
-            return token;
         }
+        return token;
+    }
 
+    public String toString(Claims claims) {
+        StringBuilder sb = new StringBuilder("{");
+        claims.forEach((k, v) -> {
+            sb.append("\"").append(k).append("\"")
+                    .append("\"").append(v).append("\"")
+                    .append(",");
+        });
+        sb.replace(sb.length() - 1, sb.length() - 1, "");
+        sb.append("}");
+        return sb.toString();
     }
 }
