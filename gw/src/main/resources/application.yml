@@ -3,3 +3,5 @@ spring:
     name: GW
   profiles:
     active: dev
+gw:
+  jwt-judge:false

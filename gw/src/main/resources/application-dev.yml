@@ -6,13 +6,6 @@ spring:
       name: admin
       password: admin
       roles: ADMIN
-jwt:
-  config:
-    key: powertn
-    # 60 * 60 * 24 * 7
-    expiration: 604800000
-    # 60 * 60 * 24
-    refresh: 86400000
 dubbo:
   application:
     name: GW
